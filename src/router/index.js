@@ -5,6 +5,7 @@ import ProductsListView from '../views/ProductsListView.vue'
 import ProductDetailView from '../views/ProductDetailView.vue'
 import LoginView from '../views/LoginView.vue'
 import NotFoundView from '../views/NotFoundView.vue'
+import { useAuthStore } from '@/stores/authStore'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -13,13 +14,13 @@ const router = createRouter({
       path: '/',
       name: 'dashboard',
       component: DashboardView,
-      meta: { layout: 'DefaultLayout' },
+      meta: { layout: 'DefaultLayout', requiresAuth: true },
     },
     {
       path: '/products',
       name: 'products-list',
       component: ProductsListView,
-      meta: { layout: 'DefaultLayout' },
+      meta: { layout: 'DefaultLayout', requiresAuth: true },
     },
     {
       path: '/products/:id',
@@ -40,6 +41,27 @@ const router = createRouter({
       meta: { layout: 'AuthLayout' },
     },
   ],
+})
+
+router.beforeEach((to, from, next) => {
+  // Pastikan store diinisialisasi di dalam guard
+  const authStore = useAuthStore()
+
+  const requiresAuth = to.meta.requiresAuth
+  const isAuthenticated = authStore.isAuthenticated
+
+  // Jika rute butuh login dan user belum login
+  if (requiresAuth && !isAuthenticated) {
+    next('/login')
+  }
+  // Jika user sudah login dan mencoba akses halaman login
+  else if (to.name === 'login' && isAuthenticated) {
+    next('/')
+  }
+  // Jika semua aman
+  else {
+    next()
+  }
 })
 
 export default router
