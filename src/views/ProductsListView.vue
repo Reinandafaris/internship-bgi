@@ -2,67 +2,171 @@
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import productService from '@/services/productService'
+import ProductForm from '@/components/ProductForm.vue'
+import { toast } from 'vue-sonner'
 
+import { Button } from '@/components/ui/button'
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
   TableHead,
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog'
 
 const products = ref([])
 const isLoading = ref(true)
 const router = useRouter()
 
-onMounted(async () => {
+const isDialogOpen = ref(false)
+const currentProduct = ref(null)
+const isEditMode = ref(false)
+
+// Fungsi untuk memuat ulang data produk
+const fetchProducts = async () => {
+  isLoading.value = true
   try {
     const response = await productService.getProducts()
     products.value = response.data
-  } catch (error) {
-    console.error('Gagal mengambil data produk:', error)
+  } catch {
+    toast.error('Gagal mengambil data produk.')
   } finally {
     isLoading.value = false
   }
-})
+}
+
+onMounted(fetchProducts)
 
 const goToDetail = (productId) => {
   router.push(`/products/${productId}`)
+}
+
+const openCreateDialog = () => {
+  isEditMode.value = false
+  currentProduct.value = { name: '', price: '', description: '' }
+  isDialogOpen.value = true
+}
+
+const openEditDialog = (product) => {
+  isEditMode.value = true
+  currentProduct.value = { ...product }
+  isDialogOpen.value = true
+}
+
+const handleFormSubmit = async (formData) => {
+  try {
+    if (isEditMode.value) {
+      await productService.updateProduct(formData.id, formData)
+      toast.success('Produk berhasil diperbarui!')
+    } else {
+      await productService.createProduct(formData)
+      toast.success('Produk berhasil ditambahkan!')
+    }
+    isDialogOpen.value = false
+    fetchProducts() // Muat ulang data
+  } catch {
+    toast.error('Terjadi kesalahan.')
+  }
+}
+
+const handleDelete = async (productId) => {
+  try {
+    await productService.deleteProduct(productId)
+    toast.success('Produk berhasil dihapus!')
+    fetchProducts() // Muat ulang data
+  } catch {
+    toast.error('Gagal menghapus produk.')
+  }
 }
 </script>
 
 <template>
   <div>
-    <h1 class="text-2xl font-bold mb-4">Daftar Produk</h1>
-    <div v-if="isLoading">
-      <p>Loading...</p>
+    <div class="flex justify-between items-center mb-4">
+      <h1 class="text-2xl font-bold">Daftar Produk</h1>
+      <Dialog v-model:open="isDialogOpen">
+        <DialogTrigger as-child>
+          <Button @click="openCreateDialog">Tambah Produk</Button>
+        </DialogTrigger>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{{ isEditMode ? 'Edit Produk' : 'Tambah Produk Baru' }}</DialogTitle>
+            <DialogDescription> Isi detail produk di bawah ini. </DialogDescription>
+          </DialogHeader>
+          <ProductForm
+            :initial-data="currentProduct"
+            @submit="handleFormSubmit"
+            @cancel="isDialogOpen = false"
+          />
+        </DialogContent>
+      </Dialog>
     </div>
-    <div v-else-if="products.length === 0">
-      <p>Belum ada produk.</p>
-    </div>
-    <Table v-else>
-      <TableCaption>Daftar semua produk yang tersedia.</TableCaption>
+
+    <Table>
       <TableHeader>
         <TableRow>
-          <TableHead class="w-[100px]">ID</TableHead>
           <TableHead>Nama Produk</TableHead>
-          <TableHead>Stok</TableHead>
           <TableHead class="text-right">Harga</TableHead>
+          <TableHead class="text-center">Aksi</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
+        <TableRow v-if="isLoading">
+          <TableCell :colspan="3" class="text-center">Loading...</TableCell>
+        </TableRow>
         <TableRow
+          v-else
           v-for="product in products"
           :key="product.id"
           @click="goToDetail(product.id)"
           class="cursor-pointer hover:bg-muted/50"
         >
-          <TableCell class="font-medium">{{ product.id }}</TableCell>
-          <TableCell>{{ product.name }}</TableCell>
-          <TableCell>{{ product.stock }}</TableCell>
+          <TableCell class="font-medium">{{ product.name }}</TableCell>
           <TableCell class="text-right">Rp {{ product.price.toLocaleString('id-ID') }}</TableCell>
+          <TableCell class="text-center">
+            <div class="flex gap-2 justify-center">
+              <Button variant="outline" size="sm" @click="openEditDialog(product)">Edit</Button>
+              <AlertDialog>
+                <AlertDialogTrigger as-child>
+                  <Button variant="destructive" size="sm">Hapus</Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>Apakah Anda yakin?</AlertDialogTitle>
+                    <AlertDialogDescription>
+                      Aksi ini tidak dapat dibatalkan. Ini akan menghapus produk secara permanen.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Batal</AlertDialogCancel>
+                    <AlertDialogAction @click="handleDelete(product.id)"
+                      >Ya, Hapus</AlertDialogAction
+                    >
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+            </div>
+          </TableCell>
         </TableRow>
       </TableBody>
     </Table>

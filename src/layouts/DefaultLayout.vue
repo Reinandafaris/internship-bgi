@@ -1,3 +1,7 @@
+<script setup>
+import { Toaster } from '@/components/ui/sonner'
+</script>
+
 <template>
   <div class="min-h-screen bg-zinc-100 flex">
     <aside class="w-64 bg-zinc-800 text-white p-4">
@@ -15,4 +19,5 @@
       </main>
     </div>
   </div>
+  <Toaster rich-colors />
 </template>
