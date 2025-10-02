@@ -23,6 +23,12 @@
       "description": "A high-back ergonomic chair with lumbar support and adjustable armrests. Designed for long hours of comfortable seating.",
       "imageUrl": "https://images.unsplash.com/photo-1580480055273-228ff5388ef8?q=80&w=1974",
       "stock": 15
+    },
+    {
+      "id": "55b5",
+      "name": "test updated",
+      "price": 3,
+      "description": "f\n"
     }
   ],
   "users": [

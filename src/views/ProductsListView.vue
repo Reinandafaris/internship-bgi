@@ -4,6 +4,7 @@ import { useRouter } from 'vue-router'
 import productService from '@/services/productService'
 import ProductForm from '@/components/ProductForm.vue'
 import { toast } from 'vue-sonner'
+import EmptyState from '@/components/EmptyState.vue'
 
 import { Button } from '@/components/ui/button'
 import {
@@ -122,7 +123,48 @@ const handleDelete = async (productId) => {
       </Dialog>
     </div>
 
-    <Table>
+    <!-- 1. Kondisi Loading (Skeleton) -->
+    <div v-if="isLoading">
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead>Nama Produk</TableHead>
+            <TableHead class="text-right">Harga</TableHead>
+            <TableHead class="text-center">Aksi</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          <TableRow v-for="n in 3" :key="n">
+            <TableCell>
+              <div class="flex items-center">
+                <Skeleton class="h-8 w-32 bg-zinc-200 dark:bg-zinc-800 block" />
+              </div>
+            </TableCell>
+            <TableCell>
+              <div class="flex items-center justify-end">
+                <Skeleton class="h-8 w-20 bg-zinc-200 dark:bg-zinc-800 block" />
+              </div>
+            </TableCell>
+            <TableCell class="flex justify-center gap-2">
+              <Skeleton class="h-8 w-16 bg-zinc-200 dark:bg-zinc-800" />
+              <Skeleton class="h-8 w-16 bg-zinc-200 dark:bg-zinc-800" />
+            </TableCell>
+          </TableRow>
+        </TableBody>
+      </Table>
+    </div>
+
+    <!-- 2. Kondisi Data Kosong (Empty State) -->
+    <EmptyState
+      v-else-if="products.length === 0"
+      title="Belum Ada Produk"
+      description="Mulai dengan menambahkan produk baru untuk ditampilkan di sini."
+    >
+      <Button @click="openCreateDialog">Tambah Produk</Button>
+    </EmptyState>
+
+    <!-- 3. Kondisi Ada Data (Tabel Produk) -->
+    <Table v-else>
       <TableHeader>
         <TableRow>
           <TableHead>Nama Produk</TableHead>
@@ -131,11 +173,7 @@ const handleDelete = async (productId) => {
         </TableRow>
       </TableHeader>
       <TableBody>
-        <TableRow v-if="isLoading">
-          <TableCell :colspan="3" class="text-center">Loading...</TableCell>
-        </TableRow>
         <TableRow
-          v-else
           v-for="product in products"
           :key="product.id"
           @click="goToDetail(product.id)"
@@ -144,7 +182,7 @@ const handleDelete = async (productId) => {
           <TableCell class="font-medium">{{ product.name }}</TableCell>
           <TableCell class="text-right">Rp {{ product.price.toLocaleString('id-ID') }}</TableCell>
           <TableCell class="text-center">
-            <div class="flex gap-2 justify-center">
+            <div @click.stop class="flex gap-2 justify-center">
               <Button variant="outline" size="sm" @click="openEditDialog(product)">Edit</Button>
               <AlertDialog>
                 <AlertDialogTrigger as-child>
