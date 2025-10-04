@@ -6,12 +6,20 @@ import ProductDetailView from '../views/ProductDetailView.vue'
 import LoginView from '../views/LoginView.vue'
 import NotFoundView from '../views/NotFoundView.vue'
 import { useAuthStore } from '@/stores/authStore'
+import LandingPageView from '@/views/LandingPageView.vue'
+import RegisterView from '@/views/RegisterView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
       path: '/',
+      name: 'landing',
+      component: LandingPageView,
+      meta: { layout: 'LandingLayout' },
+    },
+    {
+      path: '/dashboard',
       name: 'dashboard',
       component: DashboardView,
       meta: { layout: 'DefaultLayout', requiresAuth: true },
@@ -32,6 +40,12 @@ const router = createRouter({
       path: '/login',
       name: 'login',
       component: LoginView,
+      meta: { layout: 'AuthLayout' },
+    },
+    {
+      path: '/register',
+      name: 'register',
+      component: RegisterView,
       meta: { layout: 'AuthLayout' },
     },
     {

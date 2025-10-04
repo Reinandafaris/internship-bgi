@@ -45,6 +45,12 @@
       "email": "customer1@example.com",
       "password": "password123",
       "role": "customer"
+    },
+    {
+      "id": "dcfa",
+      "name": "test",
+      "email": "test@gmail.com",
+      "password": "12345678"
     }
   ]
 }

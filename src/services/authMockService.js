@@ -13,5 +13,19 @@ export default {
       }, 1000)
     })
   },
-  // Fungsi register bisa ditambahkan di sini jika perlu
+
+  register(userData) {
+    // Simulasi register selalu berhasil dan mengembalikan data user baru
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        const newUser = {
+          id: Date.now(),
+          name: userData.name,
+          email: userData.email,
+          role: 'customer',
+        }
+        resolve({ data: { user: newUser, token: dummyToken } })
+      }, 1000)
+    })
+  },
 }

@@ -1,6 +1,6 @@
-<script setup lang="ts">
+<script setup>
 import { ref } from 'vue'
-import { useRouter } from 'vue-router'
+import { RouterLink, useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/authStore'
 
 import { Button } from '@/components/ui/button'
@@ -48,11 +48,14 @@ const handleLogin = async () => {
           <Input id="password" v-model="password" type="password" required />
         </div>
       </CardContent>
-      <CardFooter>
+      <CardFooter class="pt-6">
         <Button class="w-full" type="submit" :disabled="authStore.isLoading">
           {{ authStore.isLoading ? 'Loading...' : 'Sign In' }}
         </Button>
       </CardFooter>
+      <p class="text-center text-sm text-muted-foreground pt-4">
+        if you don't have an account, <RouterLink to="/register">sign up</RouterLink>
+      </p>
     </form>
   </Card>
 </template>

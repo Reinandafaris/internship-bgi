@@ -19,7 +19,7 @@ export const useAuthStore = defineStore('auth', {
         const { user, token } = response.data
         this.user = user
         this.token = token
-        localStorage.setItem('token', token) // Simpan token
+        localStorage.setItem('token', token)
         this.status = 'success'
         return true
       } catch {
@@ -27,10 +27,28 @@ export const useAuthStore = defineStore('auth', {
         return false
       }
     },
+
+    async register(userData) {
+      this.status = 'loading'
+      try {
+        const response = await authService.register(userData)
+        const { user, token } = response.data
+        this.user = user
+        this.token = token
+        localStorage.setItem('token', token)
+        this.status = 'success'
+        return true
+      } catch (error) {
+        this.status = 'error'
+        return false
+      }
+    },
+
     logout() {
       this.user = null
       this.token = null
       localStorage.removeItem('token')
+      router.push('/login')
     },
   },
 })
