@@ -2,39 +2,203 @@
   "products": [
     {
       "id": "1",
-      "name": "Aesthetic Mechanical Keyboard",
-      "price": 1250000,
-      "description": "A 75% layout mechanical keyboard with hot-swappable switches and RGB lighting. Perfect for both gaming and productivity.",
-      "imageUrl": "https://images.unsplash.com/photo-1618384887924-3367b1405a8b?q=80&w=2070",
-      "stock": 25
+      "name": "Nike Air Zoom Pegasus 40",
+      "price": 3860000,
+      "oldPrice": 3985000,
+      "description": "Sepatu lari yang ringan dan responsif, dirancang untuk kecepatan dan kenyamanan. Dibuat dengan teknologi terbaru untuk performa maksimal di setiap langkah.",
+      "details": [
+        "Warna: Hitam Putih",
+        "Ketersediaan: Stok tersedia",
+        "Kategori: Sepatu Olahraga",
+        "Area Pengiriman: Seluruh Dunia",
+        "Biaya Pengiriman: Gratis"
+      ],
+      "images": [
+        "/images/shoes_images/shoe_1.jpg",
+        "/images/shoes_images/shoe_2.jpg",
+        "/images/shoes_images/shoe_3.jpg",
+        "/images/shoes_images/shoe_4.jpg"
+      ]
     },
     {
       "id": "2",
-      "name": "Ultra-wide 4K Monitor",
-      "price": 7500000,
-      "description": "A 34-inch curved ultra-wide monitor with 4K resolution and 144Hz refresh rate. Immersive experience for creative work.",
-      "imageUrl": "https://images.unsplash.com/photo-1624555130581-2d92411e7378?q=80&w=2070",
-      "stock": 10
+      "name": "Adidas Ultraboost Light",
+      "price": 3650000,
+      "oldPrice": 3850000,
+      "description": "Ultraboost dengan bantalan super ringan dan fleksibel, memberi kenyamanan maksimal untuk aktivitas harian maupun olahraga.",
+      "details": [
+        "Warna: Abu-abu Muda",
+        "Ketersediaan: Stok tersedia",
+        "Kategori: Sepatu Lari",
+        "Area Pengiriman: Indonesia",
+        "Biaya Pengiriman: Gratis"
+      ],
+      "images": [
+        "/images/shoes_images/shoe_1.jpg",
+        "/images/shoes_images/shoe_2.jpg",
+        "/images/shoes_images/shoe_3.jpg",
+        "/images/shoes_images/shoe_4.jpg"
+      ]
     },
     {
       "id": "3",
-      "name": "Ergonomic Office Chair",
-      "price": 2800000,
-      "description": "A high-back ergonomic chair with lumbar support and adjustable armrests. Designed for long hours of comfortable seating.",
-      "imageUrl": "https://images.unsplash.com/photo-1580480055273-228ff5388ef8?q=80&w=1974",
-      "stock": 15
+      "name": "Converse Chuck Taylor All Star",
+      "price": 899000,
+      "oldPrice": 999000,
+      "description": "Sepatu klasik dengan desain abadi, cocok untuk gaya kasual sehari-hari. Terbuat dari kanvas premium dan sol karet yang kuat.",
+      "details": [
+        "Warna: Putih",
+        "Ketersediaan: Stok terbatas",
+        "Kategori: Sepatu Kasual",
+        "Area Pengiriman: Nasional",
+        "Biaya Pengiriman: Rp20.000"
+      ],
+      "images": [
+        "/images/shoes_images/shoe_1.jpg",
+        "/images/shoes_images/shoe_2.jpg",
+        "/images/shoes_images/shoe_3.jpg",
+        "/images/shoes_images/shoe_4.jpg"
+      ]
     },
     {
-      "id": "6a53",
-      "name": "test 2",
-      "price": 212,
-      "description": "deskripso"
+      "id": "4",
+      "name": "Puma RS-X Efekt",
+      "price": 1780000,
+      "oldPrice": 1999000,
+      "description": "Desain modern dengan sentuhan retro. Nyaman digunakan seharian dengan teknologi RS-X untuk kenyamanan maksimal.",
+      "details": [
+        "Warna: Hitam Merah",
+        "Ketersediaan: Stok tersedia",
+        "Kategori: Sneakers",
+        "Area Pengiriman: Asia Tenggara",
+        "Biaya Pengiriman: Gratis"
+      ],
+      "images": [
+        "/images/shoes_images/shoe_1.jpg",
+        "/images/shoes_images/shoe_2.jpg",
+        "/images/shoes_images/shoe_3.jpg",
+        "/images/shoes_images/shoe_4.jpg"
+      ]
     },
     {
-      "id": "288c",
-      "name": "budi update ",
-      "price": 187,
-      "description": "hbs"
+      "id": "5",
+      "name": "Vans Old Skool Classic",
+      "price": 999000,
+      "oldPrice": 1150000,
+      "description": "Sneakers klasik dengan garis ikonik Vans yang tak lekang oleh waktu. Cocok untuk gaya santai dan kasual.",
+      "details": [
+        "Warna: Hitam Putih",
+        "Ketersediaan: Stok tersedia",
+        "Kategori: Sneakers Kasual",
+        "Area Pengiriman: Seluruh Indonesia",
+        "Biaya Pengiriman: Rp15.000"
+      ],
+      "images": [
+        "/images/shoes_images/shoe_1.jpg",
+        "/images/shoes_images/shoe_2.jpg",
+        "/images/shoes_images/shoe_3.jpg",
+        "/images/shoes_images/shoe_4.jpg"
+      ]
+    },
+    {
+      "id": "6",
+      "name": "New Balance 574 Core",
+      "price": 1499000,
+      "oldPrice": 1699000,
+      "description": "Sepatu dengan kombinasi klasik dan modern. Cocok untuk jalan santai dengan kenyamanan yang optimal.",
+      "details": [
+        "Warna: Navy Blue",
+        "Ketersediaan: Stok tersedia",
+        "Kategori: Lifestyle",
+        "Area Pengiriman: Nasional",
+        "Biaya Pengiriman: Gratis"
+      ],
+      "images": [
+        "/images/shoes_images/shoe_1.jpg",
+        "/images/shoes_images/shoe_2.jpg",
+        "/images/shoes_images/shoe_3.jpg",
+        "/images/shoes_images/shoe_4.jpg"
+      ]
+    },
+    {
+      "id": "7",
+      "name": "Reebok Nano X3",
+      "price": 2100000,
+      "oldPrice": 2299000,
+      "description": "Dirancang khusus untuk latihan intensif. Memberikan stabilitas dan fleksibilitas tinggi untuk berbagai gerakan.",
+      "details": [
+        "Warna: Hitam Abu",
+        "Ketersediaan: Stok tersedia",
+        "Kategori: Training Shoes",
+        "Area Pengiriman: Seluruh Dunia",
+        "Biaya Pengiriman: Gratis"
+      ],
+      "images": [
+        "/images/shoes_images/shoe_1.jpg",
+        "/images/shoes_images/shoe_2.jpg",
+        "/images/shoes_images/shoe_3.jpg",
+        "/images/shoes_images/shoe_4.jpg"
+      ]
+    },
+    {
+      "id": "8",
+      "name": "ASICS Gel-Kayano 30",
+      "price": 2750000,
+      "oldPrice": 2999000,
+      "description": "Sepatu premium untuk pelari jarak jauh. Dilengkapi teknologi GEL™ yang memberikan kenyamanan luar biasa.",
+      "details": [
+        "Warna: Biru Tua",
+        "Ketersediaan: Stok terbatas",
+        "Kategori: Sepatu Lari Premium",
+        "Area Pengiriman: Indonesia",
+        "Biaya Pengiriman: Gratis"
+      ],
+      "images": [
+        "/images/shoes_images/shoe_1.jpg",
+        "/images/shoes_images/shoe_2.jpg",
+        "/images/shoes_images/shoe_3.jpg",
+        "/images/shoes_images/shoe_4.jpg"
+      ]
+    },
+    {
+      "id": "9",
+      "name": "Under Armour HOVR Phantom 3",
+      "price": 2450000,
+      "oldPrice": 2650000,
+      "description": "Teknologi HOVR™ menjaga energi dan mengurangi benturan. Ideal untuk latihan maupun kegiatan harian.",
+      "details": [
+        "Warna: Abu Gelap",
+        "Ketersediaan: Stok tersedia",
+        "Kategori: Running Shoes",
+        "Area Pengiriman: Global",
+        "Biaya Pengiriman: Gratis"
+      ],
+      "images": [
+        "/images/shoes_images/shoe_1.jpg",
+        "/images/shoes_images/shoe_2.jpg",
+        "/images/shoes_images/shoe_3.jpg",
+        "/images/shoes_images/shoe_4.jpg"
+      ]
+    },
+    {
+      "id": "10",
+      "name": "On Cloud 5",
+      "price": 2990000,
+      "oldPrice": 3190000,
+      "description": "Sepatu ultra-ringan dengan desain elegan dan sistem CloudTec® yang memberikan kenyamanan luar biasa setiap langkah.",
+      "details": [
+        "Warna: Abu Putih",
+        "Ketersediaan: Stok tersedia",
+        "Kategori: Lifestyle Performance",
+        "Area Pengiriman: Seluruh Dunia",
+        "Biaya Pengiriman: Gratis"
+      ],
+      "images": [
+        "/images/shoes_images/shoe_1.jpg",
+        "/images/shoes_images/shoe_2.jpg",
+        "/images/shoes_images/shoe_3.jpg",
+        "/images/shoes_images/shoe_4.jpg"
+      ]
     }
   ],
   "users": [

@@ -1,14 +1,21 @@
 <script setup>
 import { ref, onMounted } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
+import { useRoute } from 'vue-router'
 import productService from '@/services/productService'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 
-const route = useRoute()
-const router = useRouter()
+// State untuk menyimpan data produk
 const product = ref(null)
 const isLoading = ref(true)
+
+// State untuk gambar yang aktif
+const activeImageIndex = ref(0)
+
+const route = useRoute()
+
+// Fungsi untuk mengubah gambar utama
+const changeImage = (index) => {
+  activeImageIndex.value = index
+}
 
 onMounted(async () => {
   const productId = route.params.id
@@ -24,35 +31,275 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div>
-    <Button @click="router.back()" variant="outline" class="mb-4">
-      &larr; Kembali ke Daftar
-    </Button>
-    <div v-if="isLoading">
-      <p>Loading...</p>
-    </div>
-    <Card v-else-if="product">
-      <CardHeader>
-        <CardTitle class="text-3xl">{{ product.name }}</CardTitle>
-        <CardDescription>Detail Produk ID: {{ product.id }}</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <img
-          :src="product.imageUrl"
-          :alt="product.name"
-          class="w-full h-64 object-cover rounded-md mb-4"
-        />
-        <div class="grid gap-4">
-          <p class="text-lg">{{ product.description }}</p>
-          <div class="flex justify-between items-center">
-            <span class="text-sm text-muted-foreground">Stok: {{ product.stock }}</span>
-            <span class="text-2xl font-bold">Rp {{ product.price.toLocaleString('id-ID') }}</span>
+  <div v-if="isLoading" class="text-center">Memuat produk...</div>
+  <div v-else-if="!product" class="text-center">Produk tidak ditemukan.</div>
+
+  <div v-else class="card-wrapper">
+    <div class="card">
+      <div class="product-imgs">
+        <div class="img-display">
+          <div
+            class="img-showcase"
+            :style="{ transform: `translateX(${-activeImageIndex * 100}%)` }"
+          >
+            <img
+              v-for="(img, index) in product.images"
+              :key="index"
+              :src="img"
+              :alt="product.name"
+            />
           </div>
         </div>
-      </CardContent>
-    </Card>
-    <div v-else>
-      <p>Produk tidak ditemukan.</p>
+        <div class="img-select">
+          <div class="img-item" v-for="(img, index) in product.images" :key="index">
+            <a href="#" @click.prevent="changeImage(index)">
+              <img :src="img" :alt="product.name" />
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-content">
+        <h2 class="product-title">{{ product.name }}</h2>
+        <a href="#" class="product-link">visit nike store</a>
+        <div class="product-rating">
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star-half-alt"></i>
+          <span>4.7(21)</span>
+        </div>
+
+        <div class="product-price">
+          <p class="last-price">
+            Old Price: <span>Rp {{ product.oldPrice.toLocaleString('id-ID') }}</span>
+          </p>
+          <p class="new-price">
+            New Price: <span>Rp {{ product.price.toLocaleString('id-ID') }}</span>
+          </p>
+        </div>
+
+        <div class="product-detail">
+          <h2>Tentang item ini:</h2>
+          <p>{{ product.description }}</p>
+          <ul>
+            <li v-for="(detail, index) in product.details" :key="index">{{ detail }}</li>
+          </ul>
+        </div>
+
+        <div class="purchase-info">
+          <input type="number" min="0" value="1" />
+          <button type="button" class="btn">
+            Add to Cart <i class="fas fa-shopping-cart"></i>
+          </button>
+          <button type="button" class="btn">Compare</button>
+        </div>
+
+        <div class="social-links">
+          <p>Share At:</p>
+          <a href="#"><i class="fab fa-facebook-f"></i></a>
+          <a href="#"><i class="fab fa-twitter"></i></a>
+          <a href="#"><i class="fab fa-instagram"></i></a>
+          <a href="#"><i class="fab fa-whatsapp"></i></a>
+          <a href="#"><i class="fab fa-pinterest"></i></a>
+        </div>
+      </div>
     </div>
   </div>
 </template>
+
+<style scoped>
+@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css');
+
+:root {
+  --btn-bg-1: #256eff;
+  --btn-bg-2: #f64749;
+  --text-color: #12263a;
+  --star-color: #ffc107;
+}
+
+.card-wrapper {
+  max-width: 1100px;
+  margin: 2rem auto;
+}
+img {
+  width: 100%;
+  display: block;
+}
+.img-display {
+  overflow: hidden;
+}
+.img-showcase {
+  display: flex;
+  width: 100%;
+  transition: all 0.5s ease;
+}
+.img-showcase img {
+  min-width: 100%;
+}
+.img-select {
+  display: flex;
+}
+.img-item {
+  margin: 0.3rem;
+}
+.img-item:hover {
+  opacity: 0.8;
+}
+.product-content {
+  padding: 2rem 1rem;
+}
+.product-title {
+  font-size: 3rem;
+  text-transform: capitalize;
+  font-weight: 700;
+  position: relative;
+  color: #12263a;
+  margin: 1rem 0;
+}
+.product-title::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 4px;
+  width: 80px;
+  background: #12263a;
+}
+.product-link {
+  text-decoration: none;
+  text-transform: uppercase;
+  font-weight: 400;
+  font-size: 0.9rem;
+  display: inline-block;
+  margin-bottom: 0.5rem;
+  background: #256eff;
+  color: #fff;
+  padding: 0 0.3rem;
+  transition: all 0.5s ease;
+}
+.product-link:hover {
+  opacity: 0.9;
+}
+.product-rating {
+  color: #ffc107;
+}
+.product-rating span {
+  font-weight: 600;
+  color: #252525;
+}
+.product-price {
+  margin: 1rem 0;
+  font-size: 1rem;
+  font-weight: 700;
+}
+.product-price span {
+  font-weight: 400;
+}
+.last-price span {
+  color: #f64749;
+  text-decoration: line-through;
+}
+.new-price span {
+  color: #256eff;
+}
+.product-detail h2 {
+  text-transform: capitalize;
+  color: #12263a;
+  padding-bottom: 0.6rem;
+}
+.product-detail p {
+  font-size: 0.9rem;
+  padding: 0.3rem;
+  opacity: 0.8;
+}
+.product-detail ul {
+  margin: 1rem 0;
+  font-size: 0.9rem;
+}
+.product-detail ul li {
+  margin: 0.4rem 0;
+  list-style: none;
+  font-weight: 600;
+  opacity: 0.9;
+}
+.product-detail ul li span {
+  font-weight: 400;
+}
+.purchase-info {
+  margin: 1.5rem 0;
+}
+.purchase-info input,
+.purchase-info .btn {
+  border: 1.5px solid #ddd;
+  border-radius: 25px;
+  text-align: center;
+  padding: 0.45rem 0.8rem;
+  outline: 0;
+  margin-right: 0.2rem;
+  margin-bottom: 1rem;
+}
+.purchase-info input {
+  width: 60px;
+}
+.purchase-info .btn {
+  cursor: pointer;
+  color: #fff;
+}
+.purchase-info .btn:first-of-type {
+  background: #256eff;
+}
+.purchase-info .btn:last-of-type {
+  background: #f64749;
+}
+.purchase-info .btn:hover {
+  opacity: 0.9;
+}
+.social-links {
+  display: flex;
+  align-items: center;
+}
+.social-links a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  color: #000;
+  border: 1px solid #000;
+  margin: 0 0.2rem;
+  border-radius: 50%;
+  text-decoration: none;
+  font-size: 0.8rem;
+  transition: all 0.5s ease;
+}
+.social-links a:hover {
+  background: #000;
+  border-color: transparent;
+  color: #fff;
+}
+
+@media screen and (min-width: 992px) {
+  .card {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-gap: 1.5rem;
+  }
+  .card-wrapper {
+    /* Optional: hilangkan jika tidak ingin di tengah layar */
+    /* height: 100vh; */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .product-imgs {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .product-content {
+    padding-top: 0;
+  }
+}
+</style>
