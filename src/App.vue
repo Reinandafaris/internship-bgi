@@ -2,8 +2,8 @@
 import { computed } from 'vue'
 import { useRoute } from 'vue-router'
 import AuthLayout from './layouts/AuthLayout.vue'
-import DefaultLayout from './layouts/DefaultLayout.vue'
 import LandingLayout from './layouts/LandingLayout.vue'
+import defaults from './layouts/default.vue'
 
 const route = useRoute()
 
@@ -15,7 +15,10 @@ const layout = computed(() => {
   if (route.meta.layout === 'LandingLayout') {
     return LandingLayout
   }
-  return DefaultLayout
+  if (route.meta.layout === 'default') {
+    return defaults
+  }
+  return defaults
 })
 </script>
 

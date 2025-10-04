@@ -25,10 +25,16 @@
       "stock": 15
     },
     {
-      "id": "55b5",
-      "name": "test updated",
-      "price": 3,
-      "description": "f\n"
+      "id": "6a53",
+      "name": "test 2",
+      "price": 212,
+      "description": "deskripso"
+    },
+    {
+      "id": "288c",
+      "name": "budi update ",
+      "price": 187,
+      "description": "hbs"
     }
   ],
   "users": [
