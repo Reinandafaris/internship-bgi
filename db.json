@@ -222,5 +222,123 @@
       "email": "test@gmail.com",
       "password": "12345678"
     }
+  ],
+  "orders": [
+    {
+      "id": "dfc6",
+      "fullName": "reinanda",
+      "password": "12345678",
+      "email": "reinandafaris7@gmail.com",
+      "phone": "089514342665",
+      "quantity": 2,
+      "pickupTime": "2025-10-05T09:47",
+      "paymentProof": {},
+      "notes": "test",
+      "product": "product-b",
+      "shippingMethod": "delivery",
+      "notification": [
+        "email"
+      ]
+    },
+    {
+      "id": "05b4",
+      "fullName": "reinanda",
+      "password": "12345678",
+      "email": "reinandafaris7@gmail.com",
+      "phone": "089514342665",
+      "quantity": 2,
+      "pickupTime": "2025-10-05T09:51",
+      "paymentProof": null,
+      "notes": "test",
+      "product": "product-a",
+      "shippingMethod": "pickup",
+      "notification": [
+        ""
+      ]
+    },
+    {
+      "id": "dd87",
+      "fullName": "reinanda",
+      "password": "12345678",
+      "email": "reinandafaris7@gmail.com",
+      "phone": "089514342665",
+      "quantity": 4,
+      "pickupTime": "2025-10-05T09:54",
+      "paymentProof": null,
+      "notes": "test",
+      "product": "product-b",
+      "shippingMethod": "delivery",
+      "notification": [
+        "email",
+        "sms"
+      ]
+    },
+    {
+      "id": "c2e5",
+      "fullName": "viji",
+      "password": "12345678",
+      "email": "reinandafaris7@gmail.com",
+      "phone": "089514342665",
+      "quantity": 3,
+      "pickupTime": "2025-10-05T10:23",
+      "paymentProof": null,
+      "notes": "test",
+      "product": "product-c",
+      "shippingMethod": "pickup",
+      "notification": [
+        "",
+        "email",
+        "sms"
+      ]
+    },
+    {
+      "id": "18e1",
+      "fullName": "reinanda",
+      "password": "12345678",
+      "email": "reinandafaris7@gmail.com",
+      "phone": "089514342665",
+      "quantity": 1,
+      "pickupTime": "2025-10-05T11:26",
+      "paymentProof": null,
+      "notes": "test",
+      "product": "product-a",
+      "shippingMethod": "delivery",
+      "notification": [
+        "email"
+      ]
+    },
+    {
+      "id": "3d5b",
+      "fullName": "reinanda",
+      "password": "12345678",
+      "email": "reinandafaris7@gmail.com",
+      "phone": "089514342665",
+      "quantity": 6,
+      "pickupTime": "2025-10-05T11:27",
+      "paymentProof": null,
+      "notes": "test",
+      "product": "product-a",
+      "shippingMethod": "delivery",
+      "notification": [
+        "email"
+      ]
+    },
+    {
+      "id": "2712",
+      "fullName": "albert",
+      "password": "12345678",
+      "email": "reinandafaris7@gmail.com",
+      "phone": "089514342665",
+      "quantity": 7,
+      "pickupTime": "2025-10-05T11:29",
+      "paymentProof": null,
+      "notes": "test",
+      "product": "product-b",
+      "shippingMethod": "delivery",
+      "notification": [
+        "email",
+        "sms"
+      ]
+    }
   ]
 }

@@ -8,6 +8,8 @@ import { useAuthStore } from '@/stores/authStore'
 import LandingPageView from '@/views/LandingPageView.vue'
 import RegisterView from '@/views/RegisterView.vue'
 import Dashboard from '@/pages/dashboard.vue'
+import LandingDetail from '@/views/LandingDetail.vue'
+import Orders from '@/views/Orders.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -16,6 +18,18 @@ const router = createRouter({
       path: '/',
       name: 'landing',
       component: LandingPageView,
+      meta: { layout: 'LandingLayout' },
+    },
+    {
+      path: '/product-detail/:id',
+      name: 'product-detail-landing',
+      component: LandingDetail,
+      meta: { layout: 'LandingLayout' },
+    },
+    {
+      path: '/orders',
+      name: 'Orders',
+      component: Orders,
       meta: { layout: 'LandingLayout' },
     },
     {

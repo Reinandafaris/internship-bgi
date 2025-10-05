@@ -1,3 +1,51 @@
+<script setup>
+import { ref, onMounted, computed } from 'vue'
+import { useRouter } from 'vue-router'
+import productService from '@/services/productService' // Pastikan path ini benar
+import EmptyState from '@/components/EmptyState.vue'
+
+const products = ref([])
+const isLoading = ref(true)
+const router = useRouter()
+
+const showAllProducts = ref(false)
+
+// Computed property untuk produk yang akan ditampilkan
+const displayedProducts = computed(() => {
+  if (showAllProducts.value) {
+    return products.value // Tampilkan semua jika showAllProducts adalah true
+  }
+  return products.value.slice(0, 3) // Tampilkan hanya 3 item pertama
+})
+
+onMounted(async () => {
+  isLoading.value = true // Set isLoading ke true di awal
+  try {
+    // await new Promise((resolve) => setTimeout(resolve, 1500))
+    const response = await productService.getProducts()
+    products.value = response.data
+  } catch (error) {
+    console.error('Gagal mengambil data produk:', error)
+  } finally {
+    isLoading.value = false
+  }
+})
+
+// Fungsi untuk memilih gambar secara acak dari array 'images'
+const getRandomImage = (images) => {
+  if (!images || images.length === 0) {
+    return 'https://placehold.co/600x400' // Gambar default jika tidak ada
+  }
+  const randomIndex = Math.floor(Math.random() * images.length)
+  return images[randomIndex]
+}
+
+// Fungsi untuk navigasi ke halaman detail
+const goToDetail = (productId) => {
+  router.push(`/product-detail/${productId}`)
+}
+</script>
+
 <template>
   <nav>
     <div class="nav__header">
@@ -31,7 +79,7 @@
         bring joy to every scoop. Welcome to your sweet escape!
       </p>
       <div class="header__btn">
-        <button class="btn">Buy Now</button>
+        <router-link to="/orders" class="btn">Buy Now</router-link>
       </div>
       <ul class="socials">
         <li>
@@ -49,6 +97,60 @@
       </ul>
     </div>
   </header>
+
+  <section class="section__container products__container">
+    <h2 class="section__header">Products</h2>
+
+    <div v-if="isLoading" class="products__grid">
+      <div v-for="n in 3" :key="n" class="flex flex-col space-y-3">
+        <Skeleton class="h-[170px] w-full rounded-xl bg-zinc-200 dark:bg-zinc-800" />
+        <div class="space-y-2 p-2">
+          <Skeleton class="h-4 w-4/5 bg-zinc-200 dark:bg-zinc-800" />
+          <Skeleton class="h-4 w-full bg-zinc-200 dark:bg-zinc-800" />
+          <Skeleton class="h-4 w-2/3 bg-zinc-200 dark:bg-zinc-800" />
+        </div>
+      </div>
+    </div>
+
+    <div v-else>
+      <EmptyState
+        v-if="products.length === 0"
+        title="Belum Ada Produk"
+        description="Saat ini belum ada produk untuk ditampilkan."
+      />
+
+      <div v-else>
+        <div class="products__grid">
+          <div
+            v-for="product in displayedProducts"
+            :key="product.id"
+            class="product__card"
+            @click="goToDetail(product.id)"
+          >
+            <img
+              :src="getRandomImage(product.images)"
+              :alt="product.name"
+              class="product__card__image"
+            />
+            <div class="product__card__content">
+              <h3 class="product__card__title">{{ product.name }}</h3>
+              <p class="product__card__description">{{ product.description }}</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="more__button__container">
+          <button
+            v-if="!showAllProducts && products.length > 3"
+            @click="showAllProducts = true"
+            class="more__button"
+          >
+            View More
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
 
   <section class="section__container popular__container" id="menu">
     <h2 class="section__header">Popular Ice-Cream</h2>
@@ -770,6 +872,114 @@ footer {
   .header__content .socials {
     justify-content: flex-start;
   }
+
+  /* card mulai */
+
+  .products__container .section__header {
+    text-align: left;
+  }
+
+  .products__grid {
+    display: grid;
+    gap: 1.5rem; /* Jarak antar kartu */
+    /* Default: 1 kolom untuk mobile */
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    margin-top: 2rem;
+  }
+
+  .product__card {
+    background-color: #ffffff;
+    border-radius: 0.75rem; /* Sudut membulat */
+    box-shadow:
+      0 4px 6px -1px rgba(0, 0, 0, 0.1),
+      0 2px 4px -2px rgba(0, 0, 0, 0.1); /* Efek bayangan */
+    overflow: hidden; /* Penting agar gambar mengikuti sudut membulat */
+    display: flex;
+    flex-direction: column;
+    transition:
+      transform 0.3s ease,
+      box-shadow 0.3s ease;
+    cursor: pointer;
+  }
+
+  .product__card:hover {
+    transform: translateY(-5px); /* Efek mengangkat saat di-hover */
+    box-shadow:
+      0 10px 15px -3px rgba(0, 0, 0, 0.1),
+      0 4px 6px -4px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+  }
+
+  .product__card__image {
+    width: 100%;
+    aspect-ratio: 16 / 9; /* Menjaga rasio gambar */
+    object-fit: cover; /* Memastikan gambar memenuhi area tanpa terdistorsi */
+  }
+
+  .product__card__content {
+    padding: 1.5rem;
+    flex-grow: 1; /* Memastikan konten mengisi sisa ruang */
+    display: flex;
+    flex-direction: column;
+  }
+
+  .product__card__title {
+    font-size: 1.25rem; /* Ukuran judul */
+    font-weight: 600;
+    color: #2d3748;
+    margin-bottom: 0.5rem;
+  }
+
+  .product__card__description {
+    font-size: 0.9rem;
+    line-height: 1.6;
+    color: #4a5568;
+    flex-grow: 1; /* Mendorong deskripsi untuk mengisi ruang */
+    /* Batasi deskripsi hanya 3 baris */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+    -webkit-box-orient: vertical;
+  }
+
+  .more__button__container {
+    display: flex;
+    justify-content: center;
+    margin-top: 2rem;
+  }
+
+  .more__button {
+    padding: 0.75rem 2rem;
+    font-size: 1rem;
+    font-weight: 600;
+    color: white;
+    background-color: #256eff;
+    border: none;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+
+  .more__button:hover {
+    background-color: #1c5bff;
+  }
+
+  @media (min-width: 640px) {
+    .products__grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  /* Tampilan Desktop: 3 kolom */
+  @media (min-width: 1024px) {
+    .products__grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  /* card akhir */
 
   .popular__container .section__header {
     text-align: left;
