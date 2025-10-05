@@ -20,6 +20,15 @@ onMounted(async () => {
     isLoading.value = false
   }
 })
+
+const isNavOpen = ref(false)
+const toggleNav = () => {
+  isNavOpen.value = !isNavOpen.value
+}
+
+const closeNav = () => {
+  isNavOpen.value = false
+}
 </script>
 
 <template>
@@ -28,11 +37,11 @@ onMounted(async () => {
       <div class="nav__logo">
         <a href="#" class="logo">Ice<span>World</span></a>
       </div>
-      <div class="nav__menu__btn" id="menu-btn">
-        <i class="ri-menu-3-line"></i>
+      <div class="nav__menu__btn" id="menu-btn" @click="toggleNav">
+        <i :class="isNavOpen ? 'ri-close-line' : 'ri-menu-3-line'"></i>
       </div>
     </div>
-    <ul class="nav__links" id="nav-links">
+    <ul class="nav__links" id="nav-links" :class="{ open: isNavOpen }" @click="closeNav">
       <li><a href="#home">Home</a></li>
       <li><a href="#menu">Menu</a></li>
       <li><a href="#categories">Categories</a></li>
