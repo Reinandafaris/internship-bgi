@@ -10,6 +10,8 @@ import RegisterView from '@/views/RegisterView.vue'
 import Dashboard from '@/pages/dashboard.vue'
 import LandingDetail from '@/views/LandingDetail.vue'
 import Orders from '@/views/Orders.vue'
+import OrderListView from '@/views/OrderListView.vue'
+import OrderDetailView from '@/views/OrderDetailView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -31,6 +33,18 @@ const router = createRouter({
       name: 'Orders',
       component: Orders,
       meta: { layout: 'LandingLayout' },
+    },
+    {
+      path: '/orders-list',
+      name: 'Orders List',
+      component: OrderListView,
+      meta: { layout: 'default' },
+    },
+    {
+      path: '/orders-detail/:id',
+      name: 'Orders Detail',
+      component: OrderDetailView,
+      meta: { layout: 'default' },
     },
     {
       path: '/dashboard',

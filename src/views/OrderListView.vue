@@ -1,12 +1,13 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-import productService from '@/services/productService'
-import ProductForm from '@/components/ProductForm.vue'
 import EmptyState from '@/components/EmptyState.vue'
 import Swal from '@/plugins/sweetalert.js'
-
 import { Button } from '@/components/ui/button'
+import { VTable } from 'vuetify/components'
+import OrderForm from '@/components/OrderForm.vue'
+import orderService from '@/services/orderService'
+
 import {
   Dialog,
   DialogContent,
@@ -28,45 +29,56 @@ import {
 } from '@/components/ui/alert-dialog'
 
 // Data & State
-const products = ref([])
+const orders = ref([])
 const isLoading = ref(true)
 const router = useRouter()
 
 const isDialogOpen = ref(false)
-const currentProduct = ref(null)
+const currentOrder = ref(null)
 const isEditMode = ref(false)
 
-// Ambil data produk
-const fetchProducts = async () => {
+// Ambil data pesanan
+const fetchOrders = async () => {
   isLoading.value = true
   try {
-    const response = await productService.getProducts()
-    products.value = response.data
+    const response = await orderService.getOrders()
+    orders.value = response.data
   } catch {
-    toast.error('Gagal mengambil data produk.')
+    Swal.fire({ icon: 'error', title: 'Gagal mengambil data pesanan.' })
   } finally {
     isLoading.value = false
   }
 }
 
-onMounted(fetchProducts)
+onMounted(fetchOrders)
 
 // Navigasi detail
-const goToDetail = (productId) => {
-  router.push(`/products/${productId}`)
+const goToDetail = (orderId) => {
+  router.push(`/orders-detail/${orderId}`)
 }
 
 // Buka form tambah
 const openCreateDialog = () => {
   isEditMode.value = false
-  currentProduct.value = { name: '', price: '', description: '' }
+  currentOrder.value = {
+    fullName: '',
+    password: '',
+    email: '',
+    phone: '',
+    quantity: 1,
+    pickupTime: '',
+    notes: '',
+    product: '',
+    shippingMethod: 'delivery',
+    notification: [],
+  }
   isDialogOpen.value = true
 }
 
 // Buka form edit
-const openEditDialog = (product) => {
+const openEditDialog = (order) => {
   isEditMode.value = true
-  currentProduct.value = { ...product }
+  currentOrder.value = { ...order }
   isDialogOpen.value = true
 }
 
@@ -74,28 +86,28 @@ const openEditDialog = (product) => {
 const handleFormSubmit = async (formData) => {
   try {
     if (isEditMode.value) {
-      await productService.updateProduct(formData.id, formData)
+      await orderService.updateOrder(formData.id, formData)
       Swal.fire({
         toast: true,
         position: 'top-end',
         icon: 'success',
-        title: 'Produk berhasil diperbarui!',
+        title: 'Order berhasil diperbarui!',
         showConfirmButton: false,
         timer: 3000,
       })
     } else {
-      await productService.createProduct(formData)
+      await orderService.createOrder(formData)
       Swal.fire({
         toast: true,
         position: 'top-end',
         icon: 'success',
-        title: 'Produk berhasil ditambahkan!',
+        title: 'Order berhasil ditambahkan!',
         showConfirmButton: false,
         timer: 3000,
       })
     }
     isDialogOpen.value = false
-    fetchProducts()
+    fetchOrders()
   } catch {
     Swal.fire({
       toast: true,
@@ -108,21 +120,21 @@ const handleFormSubmit = async (formData) => {
   }
 }
 
-// Hapus produk
-const handleDelete = async (productId) => {
+// Hapus order
+const handleDelete = async (orderId) => {
   try {
-    await productService.deleteProduct(productId)
+    await orderService.deleteOrder(orderId)
     Swal.fire({
       toast: true,
       position: 'top-end',
       icon: 'success',
-      title: 'Produk berhasil dihapus!',
+      title: 'Order berhasil dihapus!',
       showConfirmButton: false,
       timer: 3000,
     })
-    fetchProducts()
+    fetchOrders()
   } catch {
-    toast.error('Gagal menghapus produk.')
+    toast.error('Gagal menghapus order.')
   }
 }
 </script>
@@ -131,21 +143,24 @@ const handleDelete = async (productId) => {
   <div>
     <!-- Header -->
     <div class="flex justify-between items-center mx-4 mb-6">
-      <h1 class="text-xl">Daftar Product</h1>
+      <h1 class="text-xl">Order List</h1>
       <Dialog class="relative z-10 !p-6" v-model:open="isDialogOpen">
         <DialogTrigger as-child>
-          <Button @click="openCreateDialog">Tambah Produk</Button>
+          <Button @click="openCreateDialog">Tambah Order</Button>
         </DialogTrigger>
-        <DialogContent class="max-w-lg sm:w-full !p-6">
-          <DialogHeader>
-            <DialogTitle>{{ isEditMode ? 'Edit Produk' : 'Tambah Produk Baru' }}</DialogTitle>
-            <DialogDescription>Isi detail produk di bawah ini.</DialogDescription>
+        <DialogContent class="grid-rows-[auto_1fr_auto] max-h-[90vh] !max-w-2xl sm:w-full p-0">
+          <DialogHeader class="!pt-6">
+            <DialogTitle>{{ isEditMode ? 'Edit Order' : 'Tambah Order Baru' }}</DialogTitle>
+            <DialogDescription>Isi detail order di bawah ini.</DialogDescription>
           </DialogHeader>
-          <ProductForm
-            :initial-data="currentProduct"
-            @submit="handleFormSubmit"
-            @cancel="isDialogOpen = false"
-          />
+
+          <div class="overflow-y-auto px-6">
+            <OrderForm
+              :initial-data="currentOrder"
+              @submit="handleFormSubmit"
+              @cancel="isDialogOpen = false"
+            />
+          </div>
         </DialogContent>
       </Dialog>
     </div>
@@ -157,7 +172,7 @@ const handleDelete = async (productId) => {
 
     <!-- Data Kosong -->
     <EmptyState
-      v-else-if="products.length === 0"
+      v-else-if="orders.length === 0"
       title="Belum Ada Produk"
       description="Mulai dengan menambahkan produk baru untuk ditampilkan di sini."
     >
@@ -168,24 +183,30 @@ const handleDelete = async (productId) => {
     <VTable v-else class="w-full border rounded-md overflow-hidden">
       <thead class="bg-muted/30">
         <tr>
-          <th class="px-4 py-2 text-left uppercase">Nama Produk</th>
-          <th class="px-4 py-2 text-center uppercase">Harga</th>
+          <th class="px-4 py-2 text-left uppercase">Nama Customer</th>
+          <th class="px-4 py-2 text-center uppercase">Email</th>
+          <th class="px-4 py-2 text-center uppercase">Kuantitas</th>
+          <th class="px-4 py-2 text-center uppercase">Produk</th>
+          <th class="px-4 py-2 text-center uppercase">Pickup Time</th>
           <th class="px-4 py-2 text-center uppercase">Aksi</th>
         </tr>
       </thead>
 
       <tbody>
         <tr
-          v-for="product in products"
-          :key="product.id"
+          v-for="order in orders"
+          :key="order.id"
           class="hover:bg-muted/50 cursor-pointer transition-colors"
-          @click="goToDetail(product.id)"
+          @click="goToDetail(order.id)"
         >
-          <td class="px-4 py-3 font-medium">{{ product.name }}</td>
-          <td class="px-4 py-3 text-center">Rp {{ product.price.toLocaleString('id-ID') }}</td>
+          <td class="px-4 py-3 font-medium">{{ order.fullName }}</td>
+          <td class="px-4 py-3 text-center">{{ order.email }}</td>
+          <td class="px-4 py-3 text-center">{{ order.quantity }}</td>
+          <td class="px-4 py-3 text-center">{{ order.product }}</td>
+          <td class="px-4 py-3 text-center">{{ order.pickupTime }}</td>
           <td class="px-4 py-3 text-center" @click.stop>
             <div class="flex gap-2 justify-center">
-              <Button variant="outline" size="sm" @click="openEditDialog(product)">Edit</Button>
+              <Button variant="outline" size="sm" @click="openEditDialog(order)">Edit</Button>
 
               <AlertDialog>
                 <AlertDialogTrigger as-child>
@@ -200,9 +221,7 @@ const handleDelete = async (productId) => {
                   </AlertDialogHeader>
                   <AlertDialogFooter class="!items-baseline !justify-end !gap-2">
                     <AlertDialogCancel>Batal</AlertDialogCancel>
-                    <AlertDialogAction @click="handleDelete(product.id)"
-                      >Ya, Hapus</AlertDialogAction
-                    >
+                    <AlertDialogAction @click="handleDelete(order.id)">Ya, Hapus</AlertDialogAction>
                   </AlertDialogFooter>
                 </AlertDialogContent>
               </AlertDialog>

@@ -28,6 +28,12 @@ import VerticalNavLink from '@/@layouts/components/VerticalNavLink.vue'
     />
     <VerticalNavLink
       :item="{
+        title: 'Orders',
+        to: '/orders-list',
+      }"
+    />
+    <VerticalNavLink
+      :item="{
         title: 'ECommerce',
         href: '#',
       }"

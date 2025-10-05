@@ -1,0 +1,319 @@
+<script setup>
+import { ref, onMounted } from 'vue'
+import { useRoute } from 'vue-router'
+import orderService from '@/services/orderService'
+
+// State untuk menyimpan data produk
+const order = ref(null)
+const isLoading = ref(true)
+
+// State untuk gambar yang aktif
+const activeImageIndex = ref(0)
+
+const route = useRoute()
+
+// Fungsi untuk mengubah gambar utama
+const changeImage = (index) => {
+  activeImageIndex.value = index
+}
+
+onMounted(async () => {
+  const orderId = route.params.id
+  try {
+    const response = await orderService.getOrderById(orderId)
+    order.value = response.data
+  } catch (error) {
+    console.error('Gagal mengambil detail order:', error)
+  } finally {
+    isLoading.value = false
+  }
+})
+</script>
+
+<template>
+  <div v-if="isLoading" class="text-center">Memuat order...</div>
+  <div v-else-if="!order" class="text-center">Order tidak ditemukan.</div>
+
+  <div v-else class="card-wrapper">
+    <div class="card">
+      <div class="order-imgs">
+        <div v-if="order.images && order.images.length > 0">
+          <div class="img-display">
+            <div
+              class="img-showcase"
+              :style="{ transform: `translateX(${-activeImageIndex * 100}%)` }"
+            >
+              <img v-for="(img, index) in order.images" :key="index" :src="img" :alt="order.name" />
+            </div>
+          </div>
+          <div class="img-select">
+            <div class="img-item" v-for="(img, index) in order.images" :key="index">
+              <a href="#" @click.prevent="changeImage(index)">
+                <img :src="img" :alt="order.name" />
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <div v-else class="img-display">
+          <img
+            src="https://placehold.co/600x400/E0E7FF/4338CA?text=No+Image"
+            alt="Placeholder image"
+          />
+        </div>
+      </div>
+
+      <div class="order-content">
+        <h2 class="order-title">{{ order.fullName }}</h2>
+        <a href="#" class="order-link">visit nike store</a>
+        <div class="order-rating">
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star-half-alt"></i>
+          <span>4.7(21)</span>
+        </div>
+
+        <div class="order-price">
+          <p class="last-price">
+            Old Price: <span>Rp {{ order.phone.toLocaleString('id-ID') }}</span>
+          </p>
+          <p class="new-price">
+            New Price: <span>Rp {{ order.phone.toLocaleString('id-ID') }}</span>
+          </p>
+        </div>
+
+        <div class="order-detail">
+          <h2>Tentang item ini:</h2>
+          <p>FullName : {{ order.fullName }}</p>
+          <p>Password : {{ order.password }}</p>
+          <p>Email : {{ order.email }}</p>
+          <p>Phone : {{ order.phone }}</p>
+          <p>Quantity : {{ order.quantity }}</p>
+          <p>Pickup Time : {{ order.pickupTime }}</p>
+          <p>Notes : {{ order.notes }}</p>
+          <p>Product : {{ order.product }}</p>
+          <p>Shipping Method : {{ order.shippingMethod }}</p>
+          <p>Notification : {{ order.notification }}</p>
+          <ul>
+            <li v-for="(detail, index) in order.details" :key="index">{{ detail }}</li>
+          </ul>
+        </div>
+
+        <div class="purchase-info">
+          <input type="number" min="0" value="1" />
+          <button type="button" class="btn">
+            Add to Cart <i class="fas fa-shopping-cart"></i>
+          </button>
+          <button type="button" class="btn">Compare</button>
+        </div>
+
+        <div class="social-links">
+          <p>Share At:</p>
+          <a href="#"><i class="fab fa-facebook-f"></i></a>
+          <a href="#"><i class="fab fa-twitter"></i></a>
+          <a href="#"><i class="fab fa-instagram"></i></a>
+          <a href="#"><i class="fab fa-whatsapp"></i></a>
+          <a href="#"><i class="fab fa-pinterest"></i></a>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<style scoped>
+@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css');
+
+:root {
+  --btn-bg-1: #256eff;
+  --btn-bg-2: #f64749;
+  --text-color: #12263a;
+  --star-color: #ffc107;
+}
+
+.card-wrapper {
+  max-width: 1100px;
+  margin: 2rem auto;
+}
+img {
+  width: 100%;
+  display: block;
+}
+.img-display {
+  overflow: hidden;
+}
+.img-showcase {
+  display: flex;
+  width: 100%;
+  transition: all 0.5s ease;
+}
+.img-showcase img {
+  min-width: 100%;
+}
+.img-select {
+  display: flex;
+}
+.img-item {
+  margin: 0.3rem;
+}
+.img-item:hover {
+  opacity: 0.8;
+}
+.order-content {
+  padding: 2rem 1rem;
+}
+.order-title {
+  font-size: 3rem;
+  text-transform: capitalize;
+  font-weight: 700;
+  position: relative;
+  color: #12263a;
+  margin: 1rem 0;
+}
+.order-title::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 4px;
+  width: 80px;
+  background: #12263a;
+}
+.order-link {
+  text-decoration: none;
+  text-transform: uppercase;
+  font-weight: 400;
+  font-size: 0.9rem;
+  display: inline-block;
+  margin-bottom: 0.5rem;
+  background: #256eff;
+  color: #fff;
+  padding: 0 0.3rem;
+  transition: all 0.5s ease;
+}
+.order-link:hover {
+  opacity: 0.9;
+}
+.order-rating {
+  color: #ffc107;
+}
+.order-rating span {
+  font-weight: 600;
+  color: #252525;
+}
+.order-price {
+  margin: 1rem 0;
+  font-size: 1rem;
+  font-weight: 700;
+}
+.order-price span {
+  font-weight: 400;
+}
+.last-price span {
+  color: #f64749;
+  text-decoration: line-through;
+}
+.new-price span {
+  color: #256eff;
+}
+.order-detail h2 {
+  text-transform: capitalize;
+  color: #12263a;
+  padding-bottom: 0.6rem;
+}
+.order-detail p {
+  font-size: 0.9rem;
+  padding: 0;
+  margin: 0;
+  opacity: 0.8;
+}
+.order-detail ul {
+  margin: 1rem 0;
+  font-size: 0.9rem;
+}
+.order-detail ul li {
+  margin: 0.4rem 0;
+  list-style: none;
+  font-weight: 600;
+  opacity: 0.9;
+}
+.order-detail ul li span {
+  font-weight: 400;
+}
+.purchase-info {
+  margin: 1.5rem 0;
+}
+.purchase-info input,
+.purchase-info .btn {
+  border: 1.5px solid #ddd;
+  border-radius: 25px;
+  text-align: center;
+  padding: 0.45rem 0.8rem;
+  outline: 0;
+  margin-right: 0.2rem;
+  margin-bottom: 1rem;
+}
+.purchase-info input {
+  width: 60px;
+}
+.purchase-info .btn {
+  cursor: pointer;
+  color: #fff;
+}
+.purchase-info .btn:first-of-type {
+  background: #256eff;
+}
+.purchase-info .btn:last-of-type {
+  background: #f64749;
+}
+.purchase-info .btn:hover {
+  opacity: 0.9;
+}
+.social-links {
+  display: flex;
+  align-items: center;
+}
+.social-links a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  color: #000;
+  border: 1px solid #000;
+  margin: 0 0.2rem;
+  border-radius: 50%;
+  text-decoration: none;
+  font-size: 0.8rem;
+  transition: all 0.5s ease;
+}
+.social-links a:hover {
+  background: #000;
+  border-color: transparent;
+  color: #fff;
+}
+
+@media screen and (min-width: 992px) {
+  .card {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-gap: 1.5rem;
+  }
+  .card-wrapper {
+    /* Optional: hilangkan jika tidak ingin di tengah layar */
+    /* height: 100vh; */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .order-imgs {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .order-content {
+    padding-top: 0;
+  }
+}
+</style>

@@ -79,7 +79,7 @@ const goToDetail = (productId) => {
         bring joy to every scoop. Welcome to your sweet escape!
       </p>
       <div class="header__btn">
-        <router-link to="/orders" class="btn">Buy Now</router-link>
+        <router-link to="/orders" class="btn">Order Now</router-link>
       </div>
       <ul class="socials">
         <li>
