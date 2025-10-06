@@ -21,16 +21,15 @@ const props = defineProps({
   initialData: {
     type: Object,
     default: () => ({
-      fullName: '',
-      password: '',
+      full_name: '',
       email: '',
       phone: '',
       quantity: 1,
-      pickupTime: '',
+      pickup_time: '',
       notes: '',
-      product: '',
-      shippingMethod: 'delivery',
-      notification: [],
+      product_name: '',
+      shipping_method: '',
+      notification_methods: [],
     }),
   },
 })
@@ -42,11 +41,7 @@ const formData = ref({ ...props.initialData })
 
 // Aturan validasi
 const rules = computed(() => ({
-  fullName: { required: helpers.withMessage('Nama lengkap wajib diisi.', required) },
-  password: {
-    required: helpers.withMessage('Password wajib diisi.', required),
-    minLength: helpers.withMessage('Password minimal harus 8 karakter.', minLength(8)),
-  },
+  full_name: { required: helpers.withMessage('Nama lengkap wajib diisi.', required) },
   email: {
     required: helpers.withMessage('Email wajib diisi.', required),
     email: helpers.withMessage('Format email tidak valid.', email),
@@ -55,7 +50,7 @@ const rules = computed(() => ({
     required: helpers.withMessage('Jumlah wajib diisi.', required),
     minValue: helpers.withMessage('Jumlah minimal adalah 1.', minValue(1)),
   },
-  product: { required: helpers.withMessage('Anda harus memilih produk.', required) },
+  product_name: { required: helpers.withMessage('Anda harus memilih produk.', required) },
 }))
 
 const v$ = useVuelidate(rules, formData)
@@ -78,7 +73,6 @@ const handleSubmit = async () => {
 }
 
 const handleFileChange = (event) => {
-  // Untuk file, kita tangani terpisah karena v-model tidak bekerja
   formData.value.paymentProof = event.target.files[0]
 }
 </script>
@@ -86,20 +80,20 @@ const handleFileChange = (event) => {
 <template>
   <form @submit.prevent="handleSubmit" class="grid gap-4 py-4">
     <div class="grid gap-2">
-      <Label for="fullName">Nama Lengkap</Label>
-      <Input id="fullName" v-model="formData.fullName" @blur="v$.fullName.$touch" />
-      <span v-if="v$.fullName.$error" class="text-red-500 text-sm">{{
-        v$.fullName.$errors[0].$message
+      <Label for="full_name">Nama Lengkap</Label>
+      <Input id="full_name" v-model="formData.full_name" @blur="v$.full_name.$touch" />
+      <span v-if="v$.full_name.$error" class="text-red-500 text-sm">{{
+        v$.full_name.$errors[0].$message
       }}</span>
     </div>
 
-    <div class="grid gap-2">
+    <!-- <div class="grid gap-2">
       <Label for="password">Password</Label>
       <Input id="password" type="password" v-model="formData.password" @blur="v$.password.$touch" />
       <span v-if="v$.password.$error" class="text-red-500 text-sm">{{
         v$.password.$errors[0].$message
       }}</span>
-    </div>
+    </div> -->
 
     <div class="grid gap-2">
       <Label for="email">Email</Label>
@@ -115,8 +109,8 @@ const handleFileChange = (event) => {
     </div>
 
     <div class="grid gap-2">
-      <Label for="product">Pilih Produk</Label>
-      <Select v-model="formData.product" @update:open="() => v$.product.$touch()">
+      <Label for="product_name">Pilih Produk</Label>
+      <Select v-model="formData.product_name">
         <SelectTrigger>
           <SelectValue placeholder="Pilih produk..." />
         </SelectTrigger>
@@ -128,9 +122,9 @@ const handleFileChange = (event) => {
           </SelectGroup>
         </SelectContent>
       </Select>
-      <span v-if="v$.product.$error" class="text-red-500 text-sm">{{
+      <!-- <span v-if="v$.product.$error" class="text-red-500 text-sm">{{
         v$.product.$errors[0].$message
-      }}</span>
+      }}</span> -->
     </div>
 
     <div class="grid gap-2">
@@ -142,8 +136,8 @@ const handleFileChange = (event) => {
     </div>
 
     <div class="grid gap-2">
-      <Label for="pickupTime">Waktu Pengambilan</Label>
-      <Input id="pickupTime" type="datetime-local" v-model="formData.pickupTime" />
+      <Label for="pickup_time">Waktu Pengambilan</Label>
+      <Input id="pickup_time" type="datetime-local" v-model="formData.pickup_time" />
     </div>
 
     <div class="grid gap-2">
@@ -151,20 +145,20 @@ const handleFileChange = (event) => {
       <Textarea id="notes" v-model="formData.notes" />
     </div>
 
-    <div class="grid gap-2">
+    <!-- <div class="grid gap-2">
       <Label for="paymentProof">Bukti Pembayaran (Opsional)</Label>
       <Input id="paymentProof" type="file" @change="handleFileChange" />
-    </div>
+    </div> -->
 
     <div class="grid gap-2">
       <Label>Metode Pengiriman</Label>
       <div class="flex items-center gap-4">
         <div class="flex items-center gap-2">
-          <input type="radio" id="delivery" value="delivery" v-model="formData.shippingMethod" />
+          <input type="radio" id="delivery" value="delivery" v-model="formData.shipping_method" />
           <Label for="delivery">Diantar</Label>
         </div>
         <div class="flex items-center gap-2">
-          <input type="radio" id="pickup" value="pickup" v-model="formData.shippingMethod" />
+          <input type="radio" id="pickup" value="pickup" v-model="formData.shipping_method" />
           <Label for="pickup">Ambil Sendiri</Label>
         </div>
       </div>
@@ -174,11 +168,21 @@ const handleFileChange = (event) => {
       <Label>Metode Notifikasi</Label>
       <div class="flex items-center gap-4">
         <div class="flex items-center gap-2">
-          <input type="checkbox" id="notifyEmail" value="email" v-model="formData.notification" />
+          <input
+            type="checkbox"
+            id="notifyEmail"
+            value="email"
+            v-model="formData.notification_methods"
+          />
           <Label for="notifyEmail">Email</Label>
         </div>
         <div class="flex items-center gap-2">
-          <input type="checkbox" id="notifySMS" value="sms" v-model="formData.notification" />
+          <input
+            type="checkbox"
+            id="notifySMS"
+            value="sms"
+            v-model="formData.notification_methods"
+          />
           <Label for="notifySMS">SMS</Label>
         </div>
       </div>

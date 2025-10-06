@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button'
 import { VTable } from 'vuetify/components'
 import OrderForm from '@/components/OrderForm.vue'
 import orderService from '@/services/orderService'
+import uploadService from '@/services/uploadService'
 
 import {
   Dialog,
@@ -61,16 +62,15 @@ const goToDetail = (orderId) => {
 const openCreateDialog = () => {
   isEditMode.value = false
   currentOrder.value = {
-    fullName: '',
-    password: '',
+    full_name: '',
     email: '',
     phone: '',
     quantity: 1,
-    pickupTime: '',
+    pickup_time: '',
     notes: '',
-    product: '',
-    shippingMethod: 'delivery',
-    notification: [],
+    product_name: '',
+    shipping_method: '',
+    notification_methods: [],
   }
   isDialogOpen.value = true
 }
@@ -85,8 +85,19 @@ const openEditDialog = (order) => {
 // Simpan form
 const handleFormSubmit = async (formData) => {
   try {
+    let finalPayload = { ...formData }
+    console.log('Form Data:', finalPayload)
+
+    // if (formData.paymentProof && formData.paymentProof instanceof File) {
+    //   const uploadResponse = await uploadService.uploadImage(formData.paymentProof)
+
+    //   finalPayload.payment_proof_urls = [uploadResponse.data.imageUrl]
+    // }
+
+    // delete finalPayload.paymentProof
+
     if (isEditMode.value) {
-      await orderService.updateOrder(formData.id, formData)
+      await orderService.updateOrder(finalPayload.id, finalPayload)
       Swal.fire({
         toast: true,
         position: 'top-end',
@@ -96,7 +107,7 @@ const handleFormSubmit = async (formData) => {
         timer: 3000,
       })
     } else {
-      await orderService.createOrder(formData)
+      await orderService.createOrder(finalPayload)
       Swal.fire({
         toast: true,
         position: 'top-end',
@@ -106,9 +117,11 @@ const handleFormSubmit = async (formData) => {
         timer: 3000,
       })
     }
+
     isDialogOpen.value = false
     fetchOrders()
-  } catch {
+  } catch (error) {
+    console.error('Error saat submit form:', error)
     Swal.fire({
       toast: true,
       position: 'top-end',
@@ -167,16 +180,16 @@ const handleDelete = async (orderId) => {
 
     <!-- Loading -->
     <div v-if="isLoading" class="text-center py-10 text-muted-foreground">
-      Memuat data produk...
+      Memuat data Orders...
     </div>
 
     <!-- Data Kosong -->
     <EmptyState
       v-else-if="orders.length === 0"
-      title="Belum Ada Produk"
-      description="Mulai dengan menambahkan produk baru untuk ditampilkan di sini."
+      title="Belum Ada Order"
+      description="Mulai dengan menambahkan order baru untuk ditampilkan di sini."
     >
-      <Button @click="openCreateDialog">Tambah Produk</Button>
+      <Button @click="openCreateDialog">Tambah Order</Button>
     </EmptyState>
 
     <!-- Tabel -->
@@ -199,11 +212,11 @@ const handleDelete = async (orderId) => {
           class="hover:bg-muted/50 cursor-pointer transition-colors"
           @click="goToDetail(order.id)"
         >
-          <td class="px-4 py-3 font-medium">{{ order.fullName }}</td>
+          <td class="px-4 py-3 font-medium">{{ order.full_name }}</td>
           <td class="px-4 py-3 text-center">{{ order.email }}</td>
           <td class="px-4 py-3 text-center">{{ order.quantity }}</td>
-          <td class="px-4 py-3 text-center">{{ order.product }}</td>
-          <td class="px-4 py-3 text-center">{{ order.pickupTime }}</td>
+          <td class="px-4 py-3 text-center">{{ order.product_name }}</td>
+          <td class="px-4 py-3 text-center">{{ order.pickup_time }}</td>
           <td class="px-4 py-3 text-center" @click.stop>
             <div class="flex gap-2 justify-center">
               <Button variant="outline" size="sm" @click="openEditDialog(order)">Edit</Button>

@@ -4,6 +4,7 @@ import { useRouter } from 'vue-router'
 import productService from '@/services/productService'
 import EmptyState from '@/components/EmptyState.vue'
 import { initScrollReveal } from '@/plugins/navbarmobile'
+import { useAuthStore } from '@/stores/authStore'
 
 onMounted(() => {
   initScrollReveal()
@@ -11,6 +12,7 @@ onMounted(() => {
 
 const products = ref([])
 const isLoading = ref(true)
+const authStore = useAuthStore()
 const router = useRouter()
 
 const isNavOpen = ref(false)
@@ -59,6 +61,10 @@ const getRandomImage = (images) => {
 const goToDetail = (productId) => {
   router.push(`/product-detail/${productId}`)
 }
+
+const handleLogout = () => {
+  authStore.logout()
+}
 </script>
 
 <template>
@@ -80,6 +86,9 @@ const goToDetail = (productId) => {
     <div class="nav__btns">
       <button class="btn"><i class="ri-shopping-cart-line"></i></button>
       <button class="btn"><i class="ri-notification-3-fill"></i></button>
+      <button v-if="authStore.isAuthenticated" @click="handleLogout" class="btn">
+        <i class="ri-logout-box-r-line"></i>
+      </button>
     </div>
   </nav>
 
@@ -142,11 +151,7 @@ const goToDetail = (productId) => {
             class="product__card"
             @click="goToDetail(product.id)"
           >
-            <img
-              :src="getRandomImage(product.images)"
-              :alt="product.name"
-              class="product__card__image"
-            />
+            <img :src="product.images" :alt="product.name" class="product__card__image" />
             <div class="product__card__content">
               <h3 class="product__card__title">{{ product.name }}</h3>
               <p class="product__card__description">{{ product.description }}</p>

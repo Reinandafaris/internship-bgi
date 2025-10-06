@@ -37,25 +37,15 @@ onMounted(async () => {
   <div v-else class="card-wrapper">
     <div class="card">
       <div class="product-imgs">
-        <div class="img-display">
-          <div
-            class="img-showcase"
-            :style="{ transform: `translateX(${-activeImageIndex * 100}%)` }"
-          >
-            <img
-              v-for="(img, index) in product.images"
-              :key="index"
-              :src="img"
-              :alt="product.name"
-            />
-          </div>
+        <div v-if="product.images && product.images.length > 0" class="img-display">
+          <img :src="product.images" :alt="product.name" class="main-product-image" />
         </div>
-        <div class="img-select">
-          <div class="img-item" v-for="(img, index) in product.images" :key="index">
-            <a href="#" @click.prevent="changeImage(index)">
-              <img :src="img" :alt="product.name" />
-            </a>
-          </div>
+
+        <div v-else class="img-display">
+          <img
+            src="https://placehold.co/600x400/E0E7FF/4338CA?text=No+Image"
+            alt="Placeholder image"
+          />
         </div>
       </div>
 
@@ -71,18 +61,22 @@ onMounted(async () => {
           <span>4.7(21)</span>
         </div>
 
-        <div class="product-price">
+        <!-- <div class="product-price">
           <p class="last-price">
             Old Price: <span>Rp {{ product.oldPrice.toLocaleString('id-ID') }}</span>
           </p>
           <p class="new-price">
             New Price: <span>Rp {{ product.price.toLocaleString('id-ID') }}</span>
           </p>
-        </div>
+        </div> -->
 
         <div class="product-detail">
           <h2>Tentang item ini:</h2>
-          <p>{{ product.description }}</p>
+          <p>Nama Produk : {{ product.name }}</p>
+          <p>Harga : {{ product.price }}</p>
+          <p>Harga Lama : {{ product.oldPrice }}</p>
+          <p>Deskripsi : {{ product.description }}</p>
+          <p>Product Detail : {{ product.details }}</p>
           <ul>
             <li v-for="(detail, index) in product.details" :key="index">{{ detail }}</li>
           </ul>
@@ -207,11 +201,11 @@ img {
 .product-detail h2 {
   text-transform: capitalize;
   color: #12263a;
-  padding-bottom: 0.6rem;
 }
 .product-detail p {
   font-size: 0.9rem;
-  padding: 0.3rem;
+  padding: 0;
+  margin: 0;
   opacity: 0.8;
 }
 .product-detail ul {

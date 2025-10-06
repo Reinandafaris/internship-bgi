@@ -64,7 +64,7 @@ onMounted(async () => {
       </div>
 
       <div class="order-content">
-        <h2 class="order-title">{{ order.fullName }}</h2>
+        <h2 class="order-title">{{ order.full_name }}</h2>
         <a href="#" class="order-link">visit nike store</a>
         <div class="order-rating">
           <i class="fas fa-star"></i>
@@ -86,7 +86,7 @@ onMounted(async () => {
 
         <div class="order-detail">
           <h2>Tentang item ini:</h2>
-          <p>FullName : {{ order.fullName }}</p>
+          <p>FullName : {{ order.full_name }}</p>
           <p>Password : {{ order.password }}</p>
           <p>Email : {{ order.email }}</p>
           <p>Phone : {{ order.phone }}</p>

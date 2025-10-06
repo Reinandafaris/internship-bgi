@@ -15,7 +15,7 @@ const authStore = useAuthStore()
 const router = useRouter()
 
 const handleLogout = () => {
-  authStore.logout(router)
+  authStore.logout()
 }
 </script>
 

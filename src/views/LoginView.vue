@@ -26,7 +26,7 @@ const router = useRouter()
 const handleLogin = async () => {
   const success = await authStore.login({ email: email.value, password: password.value })
   if (success) {
-    router.push('/') // Arahkan ke dashboard jika berhasil
+    router.push('/dashboard') // Arahkan ke dashboard jika berhasil
   } else {
     alert('Login Gagal!') // Nanti kita ganti dengan Notifikasi/Toast
   }

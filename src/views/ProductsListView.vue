@@ -5,6 +5,7 @@ import productService from '@/services/productService'
 import ProductForm from '@/components/ProductForm.vue'
 import EmptyState from '@/components/EmptyState.vue'
 import Swal from '@/plugins/sweetalert.js'
+import uploadService from '@/services/uploadService'
 
 import { Button } from '@/components/ui/button'
 import {
@@ -59,7 +60,14 @@ const goToDetail = (productId) => {
 // Buka form tambah
 const openCreateDialog = () => {
   isEditMode.value = false
-  currentProduct.value = { name: '', price: '', description: '' }
+  currentProduct.value = {
+    name: '',
+    price: '',
+    oldPrice: '',
+    description: '',
+    details: '',
+    images: '',
+  }
   isDialogOpen.value = true
 }
 
@@ -71,10 +79,20 @@ const openEditDialog = (product) => {
 }
 
 // Simpan form
-const handleFormSubmit = async (formData) => {
+const handleFormSubmit = async (payload) => {
   try {
+    let finalPayload = { ...payload }
+
+    if (payload.imageFile && payload.imageFile instanceof File) {
+      const uploadResponse = await uploadService.uploadImage(payload.imageFile)
+
+      finalPayload.images = uploadResponse.data.imageUrl
+    }
+
+    delete finalPayload.imageFile
+
     if (isEditMode.value) {
-      await productService.updateProduct(formData.id, formData)
+      await productService.updateProduct(payload.id, finalPayload)
       Swal.fire({
         toast: true,
         position: 'top-end',
@@ -84,7 +102,7 @@ const handleFormSubmit = async (formData) => {
         timer: 3000,
       })
     } else {
-      await productService.createProduct(formData)
+      await productService.createProduct(finalPayload)
       Swal.fire({
         toast: true,
         position: 'top-end',

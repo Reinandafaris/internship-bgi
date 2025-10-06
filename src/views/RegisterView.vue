@@ -18,13 +18,13 @@ const router = useRouter()
 
 const handleRegister = async () => {
   const success = await authStore.register({
-    name: name.value,
+    fullname: name.value,
     email: email.value,
     password: password.value,
   })
 
   if (success) {
-    router.push('/')
+    router.push('/login')
   } else {
     alert('Registrasi Gagal!')
   }

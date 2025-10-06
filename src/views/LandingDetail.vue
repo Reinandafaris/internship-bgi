@@ -63,26 +63,38 @@ const closeNav = () => {
     </div>
     <div v-else class="product-detail__content">
       <div class="product-detail__gallery">
-        <img :src="product.images[0]" :alt="product.name" class="gallery__main-image" />
-        <div class="gallery__thumbnails">
+        <img
+          v-if="product.images"
+          :src="product.images"
+          :alt="product.name"
+          class="gallery__main-image"
+        />
+        <!-- <img
+          v-else
+          src="https://placehold.co/600x400"
+          :alt="product.name"
+          class="gallery__main-image"
+        /> -->
+
+        <!-- <div class="gallery__thumbnails">
           <img
             v-for="(image, index) in product.images"
             :key="index"
             :src="image"
             :alt="product.name"
           />
-        </div>
+        </div> -->
       </div>
       <div class="product-detail__info">
         <h1 class="info__title">{{ product.name }}</h1>
         <p class="info__description">{{ product.description }}</p>
-        <div class="info__price">
+        <!-- <div class="info__price">
           <span class="price__new">Rp {{ product.price.toLocaleString('id-ID') }}</span>
           <span class="price__old">Rp {{ product.oldPrice.toLocaleString('id-ID') }}</span>
-        </div>
-        <ul class="info__details-list">
+        </div> -->
+        <!-- <ul class="info__details-list">
           <li v-for="(detail, index) in product.details" :key="index">{{ detail }}</li>
-        </ul>
+        </ul> -->
         <button class="info__add-to-cart-btn">Add to Cart</button>
       </div>
     </div>

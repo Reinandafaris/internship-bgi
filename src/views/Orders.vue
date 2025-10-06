@@ -8,27 +8,22 @@ import { useRouter } from 'vue-router'
 
 const router = useRouter()
 const form = ref({
-  fullName: '',
-  password: '',
+  full_name: '',
   email: '',
   phone: '',
   quantity: 1,
-  pickupTime: '',
-  paymentProof: null,
+  pickup_time: '',
   notes: '',
-  product: '',
-  shippingMethod: 'delivery',
-  notification: [],
+  product_name: '',
+  shipping_method: '',
+  notification_methods: [],
 })
+console.log('Initial Form State:', form.value)
 
 // Validasi menggunakan Vuelidate
 const rules = computed(() => ({
-  fullName: {
+  full_name: {
     required: helpers.withMessage('Nama lengkap wajib diisi.', required),
-  },
-  password: {
-    required: helpers.withMessage('Password wajib diisi.', required),
-    minLength: helpers.withMessage('Password minimal harus 6 karakter.', minLength(6)),
   },
   email: {
     required: helpers.withMessage('Email wajib diisi.', required),
@@ -41,18 +36,18 @@ const rules = computed(() => ({
     required: helpers.withMessage('Kuantitas wajib diisi.', required),
     minValue: helpers.withMessage('Kuantitas minimal adalah 1.', (value) => value >= 1),
   },
-  pickupTime: {
+  pickup_time: {
     required: helpers.withMessage('Waktu pengambilan wajib diisi.', required),
   },
   // paymentProof: {
   //   required: helpers.withMessage('Bukti pembayaran wajib diunggah.', required),
   // },
-  product: {
+  product_name: {
     required: helpers.withMessage('Produk wajib dipilih.', required),
   },
-  notification: {
-    required: helpers.withMessage('Pilih minimal satu metode notifikasi.', required),
-  },
+  // notification: {
+  //   required: helpers.withMessage('Pilih minimal satu metode notifikasi.', required),
+  // },
 }))
 
 const v$ = useVuelidate(rules, form)
@@ -62,8 +57,6 @@ const handleFileChange = (event) => {
 }
 
 const handleFormSubmit = async () => {
-  console.log('Form Payload:', form.value)
-
   const isFormValid = await v$.value.$validate()
   if (!isFormValid) {
     Swal.fire({
@@ -87,17 +80,15 @@ const handleFormSubmit = async () => {
 
     // Kosongkan form setelah berhasil
     form.value = {
-      fullName: '',
-      password: '',
+      full_name: '',
       email: '',
       phone: '',
       quantity: 1,
-      pickupTime: '',
-      paymentProof: null,
+      pickup_time: '',
       notes: '',
-      product: '',
-      shippingMethod: 'delivery',
-      notification: [],
+      product_name: '',
+      shipping_method: 'delivery',
+      notification_methods: [],
     }
     router.push('/')
   } catch (error) {
@@ -106,6 +97,7 @@ const handleFormSubmit = async () => {
       title: 'Oops...',
       text: 'Terjadi kesalahan saat mengirim data.',
     })
+    console.error('Error submitting form:', error)
   }
 }
 </script>
@@ -136,22 +128,22 @@ const handleFormSubmit = async () => {
     <fieldset>
       <legend>Informasi Pribadi</legend>
       <div class="form-group">
-        <label for="fullName">Nama Lengkap (text):</label>
+        <label for="full_name">Nama Lengkap (text):</label>
         <input
           type="text"
-          id="fullName"
-          name="fullName"
+          id="full_name"
+          name="full_name"
           placeholder="Masukkan nama lengkap Anda"
-          v-model="form.fullName"
-          @blur="v$.fullName.$touch"
+          v-model="form.full_name"
+          @blur="v$.full_name.$touch"
           required
         />
-        <span v-if="v$.fullName.$error" class="error-message">
-          {{ v$.fullName.$errors[0].$message }}
+        <span v-if="v$.full_name.$error" class="error-message">
+          {{ v$.full_name.$errors[0].$message }}
         </span>
       </div>
 
-      <div class="form-group">
+      <!-- <div class="form-group">
         <label for="password">Password (password):</label>
         <input
           type="password"
@@ -165,7 +157,7 @@ const handleFormSubmit = async () => {
         <span v-if="v$.password.$error" class="error-message">
           {{ v$.password.$errors[0].$message }}
         </span>
-      </div>
+      </div> -->
 
       <div class="form-group">
         <label for="email">Email (email):</label>
@@ -218,31 +210,31 @@ const handleFormSubmit = async () => {
       </div>
 
       <div class="form-group">
-        <label for="pickupTime">Waktu Pengambilan (datetime-local):</label>
+        <label for="pickup_time">Waktu Pengambilan (datetime-local):</label>
         <input
           type="datetime-local"
-          id="pickupTime"
-          name="pickupTime"
-          v-model="form.pickupTime"
-          @blur="v$.pickupTime.$touch"
+          id="pickup_time"
+          name="pickup_time"
+          v-model="form.pickup_time"
+          @blur="v$.pickup_time.$touch"
         />
-        <span v-if="v$.pickupTime.$error" class="error-message">
-          {{ v$.pickupTime.$errors[0].$message }}
+        <span v-if="v$.pickup_time.$error" class="error-message">
+          {{ v$.pickup_time.$errors[0].$message }}
         </span>
       </div>
 
-      <div class="form-group">
-        <label for="paymentProof">Bukti Pembayaran (file):</label>
+      <!-- <div class="form-group">
+        <label for="payment_proof_urls">Bukti Pembayaran (file):</label>
         <input
           type="file"
-          id="paymentProof"
+          id="payment_proof_urls"
           @change="handleFileChange"
           accept="image/png, image/jpeg"
         />
-        <!-- <span v-if="v$.paymentProof.$error" class="error-message">
+        <span v-if="v$.paymentProof.$error" class="error-message">
           {{ v$.paymentProof.$errors[0].$message }}
-        </span> -->
-      </div>
+        </span>
+      </div> -->
 
       <div class="form-group">
         <label for="notes">Catatan Tambahan (textarea):</label>
@@ -255,12 +247,12 @@ const handleFormSubmit = async () => {
       </div>
 
       <div class="form-group">
-        <label for="product">Pilih Produk (select & option):</label>
+        <label for="product_name">Pilih Produk (select & option):</label>
         <select
-          id="product"
-          name="product"
-          v-model="form.product"
-          @blur="v$.product.$touch"
+          id="product_name"
+          name="product_name"
+          v-model="form.product_name"
+          @blur="v$.product_name.$touch"
           required
         >
           <option value="">--Pilih salah satu--</option>
@@ -268,8 +260,8 @@ const handleFormSubmit = async () => {
           <option value="product-b">Produk B</option>
           <option value="product-c">Produk C</option>
         </select>
-        <span v-if="v$.product.$error" class="error-message">
-          {{ v$.product.$errors[0].$message }}
+        <span v-if="v$.product_name.$error" class="error-message">
+          {{ v$.product_name.$errors[0].$message }}
         </span>
       </div>
     </fieldset>
@@ -281,9 +273,9 @@ const handleFormSubmit = async () => {
           <input
             type="radio"
             id="delivery"
-            name="shippingMethod"
+            name="shipping_method"
             value="delivery"
-            v-model="form.shippingMethod"
+            v-model="form.shipping_method"
             checked
           />
           <label for="delivery">Diantar</label>
@@ -293,9 +285,9 @@ const handleFormSubmit = async () => {
           <input
             type="radio"
             id="pickup"
-            name="shippingMethod"
+            name="shipping_method"
             value="pickup"
-            v-model="form.shippingMethod"
+            v-model="form.shipping_method"
           />
           <label for="pickup">Ambil Sendiri</label>
         </div>
@@ -310,7 +302,6 @@ const handleFormSubmit = async () => {
             name="notification"
             value="email"
             v-model="form.notification"
-            @blur="v$.notification.$touch"
           />
           <label for="notifyEmail">Kirim notifikasi ke Email</label>
         </div>
@@ -319,16 +310,15 @@ const handleFormSubmit = async () => {
           <input
             type="checkbox"
             id="notifySMS"
-            name="notification"
+            name="notification_methods"
             value="sms"
-            v-model="form.notification"
-            @blur="v$.notification.$touch"
+            v-model="form.notification_methods"
           />
           <label for="notifySMS">Kirim notifikasi ke SMS</label>
         </div>
-        <span v-if="v$.notification.$error" class="error-message">
-          {{ v$.notification.$errors[0].$message }}
-        </span>
+        <!-- <span v-if="v$.notification_methods.$error" class="error-message">
+          {{ v$.notification_methods.$errors[0].$message }}
+        </span> -->
       </div>
     </fieldset>
 

@@ -50,7 +50,7 @@ const router = createRouter({
       path: '/dashboard',
       name: 'dashboard',
       component: Dashboard,
-      meta: { layout: 'default' },
+      meta: { layout: 'default', requiresAuth: true },
     },
     {
       path: '/products',
@@ -92,22 +92,11 @@ const router = createRouter({
 })
 
 router.beforeEach((to, from, next) => {
-  // Pastikan store diinisialisasi di dalam guard
   const authStore = useAuthStore()
 
-  const requiresAuth = to.meta.requiresAuth
-  const isAuthenticated = authStore.isAuthenticated
-
-  // Jika rute butuh login dan user belum login
-  if (requiresAuth && !isAuthenticated) {
-    next('/login')
-  }
-  // Jika user sudah login dan mencoba akses halaman login
-  else if (to.name === 'login' && isAuthenticated) {
-    next('/')
-  }
-  // Jika semua aman
-  else {
+  if (to.meta.requiresAuth && !authStore.isAuthenticated) {
+    next({ name: 'login' })
+  } else {
     next()
   }
 })

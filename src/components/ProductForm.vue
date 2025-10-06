@@ -12,7 +12,14 @@ import { Textarea } from '@/components/ui/textarea'
 const props = defineProps({
   initialData: {
     type: Object,
-    default: () => ({ name: '', price: '', description: '', stock: '', imageUrl: '' }),
+    default: () => ({
+      name: '',
+      price: 0,
+      oldPrice: 0,
+      description: '',
+      details: '',
+      images: '',
+    }),
   },
 })
 
@@ -20,6 +27,7 @@ const props = defineProps({
 const emit = defineEmits(['submit', 'cancel'])
 
 const formData = ref({ ...props.initialData })
+const imageFile = ref(null)
 
 // Aturan validasi
 const rules = {
@@ -28,7 +36,12 @@ const rules = {
     required: helpers.withMessage('Harga tidak boleh kosong.', required),
     minValue: helpers.withMessage('Harga harus lebih dari 0.', minValue(1)),
   },
+  oldPrice: {
+    minValue: helpers.withMessage('Harga lama harus lebih dari 0.', minValue(1)),
+  },
   description: { required: helpers.withMessage('Deskripsi tidak boleh kosong.', required) },
+  details: { required: helpers.withMessage('Detail produk tidak boleh kosong.', required) },
+  // images: { required: helpers.withMessage('Anda harus mengunggah setidaknya satu gambar.', required) },
 }
 
 const v$ = useVuelidate(rules, formData)
@@ -42,10 +55,19 @@ watch(
   },
 )
 
+const handleFileChange = (event) => {
+  const file = event.target.files[0]
+  if (file) {
+    imageFile.value = file
+  }
+}
+
 const handleSubmit = async () => {
   const isValid = await v$.value.$validate()
   if (isValid) {
-    emit('submit', formData.value)
+    const payloadToEmit = { ...formData.value, imageFile: imageFile.value }
+
+    emit('submit', payloadToEmit)
   }
 }
 </script>
@@ -67,11 +89,33 @@ const handleSubmit = async () => {
       }}</span>
     </div>
     <div class="grid gap-2">
+      <Label for="oldPrice">Harga Lama (Opsional)</Label>
+      <Input id="oldPrice" v-model="formData.oldPrice" type="number" @blur="v$.oldPrice.$touch" />
+      <span v-if="v$.oldPrice.$error" class="text-red-500 text-sm">{{
+        v$.oldPrice.$errors[0].$message
+      }}</span>
+    </div>
+    <div class="grid gap-2">
       <Label for="description">Deskripsi</Label>
       <Textarea id="description" v-model="formData.description" @blur="v$.description.$touch" />
       <span v-if="v$.description.$error" class="text-red-500 text-sm">{{
         v$.description.$errors[0].$message
       }}</span>
+    </div>
+    <div class="grid gap-2">
+      <Label for="details">Detail Produk</Label>
+      <Textarea id="details" v-model="formData.details" @blur="v$.details.$touch" />
+      <span v-if="v$.details.$error" class="text-red-500 text-sm">{{
+        v$.details.$errors[0].$message
+      }}</span>
+    </div>
+    <!-- File input untuk gambar -->
+    <div class="grid gap-2">
+      <Label for="images">Gambar Produk</Label>
+      <Input id="images" type="file" @change="handleFileChange" accept="image/png, image/jpeg" />
+      <!-- <span v-if="v$.images.$error" class="text-red-500 text-sm">{{
+        v$.images.$errors[0].$message
+      }}</span> -->
     </div>
     <div class="flex justify-end gap-2 mt-4">
       <Button type="button" variant="outline" @click="$emit('cancel')">Batal</Button>
